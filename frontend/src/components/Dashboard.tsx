@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { userAPI } from '../utils/api';
-import type { Transaction } from '../types';
-import { CreditCard, Send, Users, Eye, EyeOff, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { userAPI } from "../utils/api";
+import type { Transaction } from "../types";
+import {
+  CreditCard,
+  Send,
+  Users,
+  Eye,
+  EyeOff,
+  ArrowUpRight,
+  ArrowDownLeft,
+} from "lucide-react";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -20,7 +28,7 @@ const Dashboard: React.FC = () => {
       const data = await userAPI.getTransactions();
       setTransactions(data.slice(0, 5)); // Show only recent 5 transactions
     } catch (error) {
-      console.error('Failed to load transactions:', error);
+      console.error("Failed to load transactions:", error);
     } finally {
       setLoading(false);
     }
@@ -29,18 +37,18 @@ const Dashboard: React.FC = () => {
   if (!user) return null;
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: 'NGN',
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
     }).format(amount);
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -88,11 +96,13 @@ const Dashboard: React.FC = () => {
             className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg"
           >
             <div className="flex items-center space-x-3">
-              <div className={`p-2 rounded-full ${
-                isOutgoing 
-                  ? 'bg-red-100 text-red-600' 
-                  : 'bg-green-100 text-green-600'
-              }`}>
+              <div
+                className={`p-2 rounded-full ${
+                  isOutgoing
+                    ? "bg-red-100 text-red-600"
+                    : "bg-green-100 text-green-600"
+                }`}
+              >
                 {isOutgoing ? (
                   <ArrowUpRight className="h-4 w-4" />
                 ) : (
@@ -101,7 +111,9 @@ const Dashboard: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-900">
-                  {isOutgoing ? `To: ${transaction.to}` : `From: ${transaction.from}`}
+                  {isOutgoing
+                    ? `To: ${transaction.to}`
+                    : `From: ${transaction.from}`}
                 </p>
                 <p className="text-xs text-gray-500">
                   {transaction.description}
@@ -112,10 +124,13 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div className="text-right">
-              <p className={`text-sm font-semibold ${
-                isOutgoing ? 'text-red-600' : 'text-green-600'
-              }`}>
-                {isOutgoing ? '-' : '+'}{formatCurrency(transaction.amount)}
+              <p
+                className={`text-sm font-semibold ${
+                  isOutgoing ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {isOutgoing ? "-" : "+"}
+                {formatCurrency(transaction.amount)}
               </p>
             </div>
           </div>
@@ -148,14 +163,18 @@ const Dashboard: React.FC = () => {
             onClick={() => setShowBalance(!showBalance)}
             className="text-white hover:text-blue-100"
           >
-            {showBalance ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            {showBalance ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
           </button>
         </div>
-        
+
         <div className="mb-6">
           <p className="text-blue-100 text-sm mb-1">Available Balance</p>
           <p className="text-3xl font-bold">
-            {showBalance ? formatCurrency(user.balance) : '****'}
+            {showBalance ? formatCurrency(user.balance) : "****"}
           </p>
         </div>
 
@@ -163,17 +182,17 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-2 gap-4">
           <Link
             to="/transfer"
-            className="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 text-center transition-all"
+            className="bg-white/25 hover:bg-white/30 rounded-lg p-4 text-center transition-all flex flex-col items-center"
           >
-            <Send className="h-6 w-6 mx-auto mb-2" />
-            <p className="text-sm font-medium">Send Money</p>
+            <Send className="h-6 w-6 mb-2" />
+            <p className="text-sm font-medium text-white">Send Money</p>
           </Link>
           <Link
             to="/beneficiaries"
-            className="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 text-center transition-all"
+            className="bg-white/25 hover:bg-white/30 rounded-lg p-4 text-center transition-all flex flex-col items-center"
           >
-            <Users className="h-6 w-6 mx-auto mb-2" />
-            <p className="text-sm font-medium">Beneficiaries</p>
+            <Users className="h-6 w-6 mb-2" />
+            <p className="text-sm font-medium text-white">Beneficiaries</p>
           </Link>
         </div>
       </div>
@@ -181,7 +200,9 @@ const Dashboard: React.FC = () => {
       {/* Recent Transactions */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Recent Transactions
+          </h2>
           <Link
             to="/transfer"
             className="text-blue-600 hover:text-blue-700 text-sm font-medium"
