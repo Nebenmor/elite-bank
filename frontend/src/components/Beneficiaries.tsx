@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { userAPI } from '../utils/api';
-import type { Beneficiary } from '../types';
-import { Users, Plus, Trash2, Search, X } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { userAPI } from "../utils/api";
+import type { Beneficiary } from "../types";
+import { Users, Plus, Trash2, Search, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface SearchedUser {
   accountNumber: string;
@@ -13,9 +13,9 @@ const Beneficiaries: React.FC = () => {
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [searchAccountNumber, setSearchAccountNumber] = useState('');
+  const [searchAccountNumber, setSearchAccountNumber] = useState("");
   const [searchedUser, setSearchedUser] = useState<SearchedUser | null>(null);
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState("");
   const [addLoading, setAddLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
@@ -28,8 +28,8 @@ const Beneficiaries: React.FC = () => {
       const userData = await userAPI.getProfile();
       setBeneficiaries(userData.beneficiaries || []);
     } catch (error) {
-      console.error('Failed to load beneficiaries:', error);
-      toast.error('Failed to load beneficiaries');
+      console.error("Failed to load beneficiaries:", error);
+      toast.error("Failed to load beneficiaries");
     } finally {
       setLoading(false);
     }
@@ -37,14 +37,16 @@ const Beneficiaries: React.FC = () => {
 
   const handleSearch = async () => {
     if (!searchAccountNumber || searchAccountNumber.length !== 10) {
-      toast.error('Please enter a valid 10-digit account number');
+      toast.error("Please enter a valid 10-digit account number");
       return;
     }
 
     // Check if user is already a beneficiary
-    const existingBeneficiary = beneficiaries.find(b => b.accountNumber === searchAccountNumber);
+    const existingBeneficiary = beneficiaries.find(
+      (b) => b.accountNumber === searchAccountNumber
+    );
     if (existingBeneficiary) {
-      toast.error('This user is already in your beneficiaries');
+      toast.error("This user is already in your beneficiaries");
       return;
     }
 
@@ -53,7 +55,9 @@ const Beneficiaries: React.FC = () => {
       const user = await userAPI.searchUser(searchAccountNumber);
       setSearchedUser(user);
     } catch (error: unknown) {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'User not found';
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "User not found";
       toast.error(errorMessage);
       setSearchedUser(null);
     } finally {
@@ -63,12 +67,12 @@ const Beneficiaries: React.FC = () => {
 
   const handleAddBeneficiary = async () => {
     if (!searchedUser) {
-      toast.error('Please search for a user first');
+      toast.error("Please search for a user first");
       return;
     }
 
     if (beneficiaries.length >= 10) {
-      toast.error('Maximum 10 beneficiaries allowed');
+      toast.error("Maximum 10 beneficiaries allowed");
       return;
     }
 
@@ -79,38 +83,49 @@ const Beneficiaries: React.FC = () => {
         searchedUser.fullName,
         nickname.trim() || undefined
       );
-      
-      toast.success('Beneficiary added successfully!');
+
+      toast.success("Beneficiary added successfully!");
       await loadBeneficiaries();
       handleCloseModal();
     } catch (error: unknown) {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to add beneficiary';
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Failed to add beneficiary";
       toast.error(errorMessage);
     } finally {
       setAddLoading(false);
     }
   };
 
-  const handleRemoveBeneficiary = async (accountNumber: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to remove ${name} from your beneficiaries?`)) {
+  const handleRemoveBeneficiary = async (
+    accountNumber: string,
+    name: string
+  ) => {
+    if (
+      !window.confirm(
+        `Are you sure you want to remove ${name} from your beneficiaries?`
+      )
+    ) {
       return;
     }
 
     try {
       await userAPI.removeBeneficiary(accountNumber);
-      toast.success('Beneficiary removed successfully!');
+      toast.success("Beneficiary removed successfully!");
       await loadBeneficiaries();
     } catch (error: unknown) {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to remove beneficiary';
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Failed to remove beneficiary";
       toast.error(errorMessage);
     }
   };
 
   const handleCloseModal = () => {
     setShowAddModal(false);
-    setSearchAccountNumber('');
+    setSearchAccountNumber("");
     setSearchedUser(null);
-    setNickname('');
+    setNickname("");
   };
 
   if (loading) {
@@ -121,7 +136,10 @@ const Beneficiaries: React.FC = () => {
           <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }, (_, i) => (
-              <div key={`loading-skeleton-${i}`} className="h-32 bg-gray-200 rounded-xl"></div>
+              <div
+                key={`loading-skeleton-${i}`}
+                className="h-32 bg-gray-200 rounded-xl"
+              ></div>
             ))}
           </div>
         </div>
@@ -139,7 +157,7 @@ const Beneficiaries: React.FC = () => {
             Manage your saved beneficiaries ({beneficiaries.length}/10)
           </p>
         </div>
-        
+
         <button
           onClick={() => setShowAddModal(true)}
           disabled={beneficiaries.length >= 10}
@@ -156,7 +174,9 @@ const Beneficiaries: React.FC = () => {
           <div className="mx-auto h-16 w-16 text-gray-400 mb-4">
             <Users className="h-16 w-16" />
           </div>
-          <h3 className="text-gray-900 font-medium mb-2">No beneficiaries yet</h3>
+          <h3 className="text-gray-900 font-medium mb-2">
+            No beneficiaries yet
+          </h3>
           <p className="text-gray-500 mb-6">
             Add beneficiaries to make quick transfers easier
           </p>
@@ -180,13 +200,18 @@ const Beneficiaries: React.FC = () => {
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
                 <button
-                  onClick={() => handleRemoveBeneficiary(beneficiary.accountNumber, beneficiary.name)}
+                  onClick={() =>
+                    handleRemoveBeneficiary(
+                      beneficiary.accountNumber,
+                      beneficiary.name
+                    )
+                  }
                   className="text-gray-400 hover:text-red-500 transition-colors"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
-              
+
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-900">
                   {beneficiary.nickname || beneficiary.name}
@@ -222,7 +247,10 @@ const Beneficiaries: React.FC = () => {
             <div className="space-y-4">
               {/* Search User */}
               <div>
-                <label htmlFor="account-search" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="account-search"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Account Number
                 </label>
                 <div className="flex space-x-2">
@@ -230,14 +258,20 @@ const Beneficiaries: React.FC = () => {
                     id="account-search"
                     type="text"
                     value={searchAccountNumber}
-                    onChange={(e) => setSearchAccountNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    onChange={(e) =>
+                      setSearchAccountNumber(
+                        e.target.value.replace(/\D/g, "").slice(0, 10)
+                      )
+                    }
                     placeholder="Enter 10-digit account number"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     maxLength={10}
                   />
                   <button
                     onClick={handleSearch}
-                    disabled={searchLoading || searchAccountNumber.length !== 10}
+                    disabled={
+                      searchLoading || searchAccountNumber.length !== 10
+                    }
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                   >
                     {searchLoading ? (
@@ -271,7 +305,10 @@ const Beneficiaries: React.FC = () => {
               {/* Nickname */}
               {searchedUser && (
                 <div>
-                  <label htmlFor="nickname-input" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="nickname-input"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Nickname (Optional)
                   </label>
                   <input

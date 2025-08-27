@@ -56,7 +56,7 @@ const Navigation: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-gray-900">Banking App</h1>
+              <h1 className="text-xl font-bold text-gray-900">Elite Bank</h1>
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
               <a
