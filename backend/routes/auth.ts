@@ -57,7 +57,7 @@ router.post("/signup", async (req, res) => {
       password: hashedPassword,
       fullName: fullName.trim(),
       accountNumber,
-      balance: 0,
+      balance: 100000,
       beneficiaries: [],
     });
 
