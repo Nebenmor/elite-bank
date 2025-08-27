@@ -146,7 +146,11 @@ const Signup: React.FC = () => {
                   <button
                     type="button"
                     className="text-gray-400 hover:text-gray-600"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowPassword(!showPassword);
+                    }}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -184,7 +188,11 @@ const Signup: React.FC = () => {
                   <button
                     type="button"
                     className="text-gray-400 hover:text-gray-600"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowConfirmPassword(!showConfirmPassword);
+                    }}
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-5 w-5" />
