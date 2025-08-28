@@ -4,15 +4,15 @@
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./",
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types"]
+    "resolveJsonModule": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "types/**/*"],
   "exclude": ["node_modules", "dist"]
 }
