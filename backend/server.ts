@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 // CORS configuration
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? [process.env.FRONTEND_URL, process.env.FRONTEND_URL_WWW].filter(
+    ? [process.env.FRONTEND_URL].filter(
         (url): url is string => Boolean(url)
       )
     : ["http://localhost:3000", "http://localhost:5173"];
