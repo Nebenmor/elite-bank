@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { User } from "../models/User";
 import {
   hashPassword,
@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // Register new user
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req: Request, res: Response) => {
   try {
     const { email, password, fullName } = req.body;
 
@@ -64,7 +64,6 @@ router.post("/signup", async (req, res) => {
     await user.save();
 
     // Generate token
-    // const token = generateToken(user._id.toString());
     const token = generateToken(user._id?.toString() || "");
 
     res.status(201).json({
@@ -85,7 +84,7 @@ router.post("/signup", async (req, res) => {
 });
 
 // Login user
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -109,7 +108,6 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate token
-    // const token = generateToken(user._id.toString());
     const token = generateToken(user._id?.toString() || "");
 
     res.json({

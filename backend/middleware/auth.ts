@@ -2,13 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/helpers";
 import { User } from "../models/User";
 
-interface AuthRequest extends Request {
-  userId?: string;
-  user?: any;
+// Extend the Express Request interface
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+      user?: any;
+    }
+  }
 }
 
 export const authenticate = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
