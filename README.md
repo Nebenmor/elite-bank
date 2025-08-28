@@ -141,6 +141,7 @@ npm start
 
 ```env
 JWT_SECRET=your_super_secure_jwt_secret_key_minimum_32_characters
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/<database>
 PORT=5000
 ```
 
