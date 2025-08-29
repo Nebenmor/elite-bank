@@ -50,7 +50,7 @@ const HamburgerMenu: React.FC = () => {
       {/* Hamburger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors md:hidden"
         aria-label="Open menu"
       >
         <Menu className="h-6 w-6 text-gray-700" />
