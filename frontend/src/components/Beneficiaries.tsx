@@ -9,6 +9,15 @@ interface SearchedUser {
   fullName: string;
 }
 
+interface ErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
+}
+
 const Beneficiaries: React.FC = () => {
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +32,7 @@ const Beneficiaries: React.FC = () => {
     loadBeneficiaries();
   }, []);
 
-  const loadBeneficiaries = async () => {
+  const loadBeneficiaries = async (): Promise<void> => {
     try {
       const userData = await userAPI.getProfile();
       setBeneficiaries(userData.beneficiaries || []);
@@ -35,7 +44,7 @@ const Beneficiaries: React.FC = () => {
     }
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (): Promise<void> => {
     if (!searchAccountNumber || searchAccountNumber.length !== 10) {
       toast.error("Please enter a valid 10-digit account number");
       return;
@@ -56,8 +65,7 @@ const Beneficiaries: React.FC = () => {
       setSearchedUser(user);
     } catch (error: unknown) {
       const errorMessage =
-        (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "User not found";
+        (error as ErrorResponse)?.response?.data?.message || "User not found";
       toast.error(errorMessage);
       setSearchedUser(null);
     } finally {
@@ -65,7 +73,7 @@ const Beneficiaries: React.FC = () => {
     }
   };
 
-  const handleAddBeneficiary = async () => {
+  const handleAddBeneficiary = async (): Promise<void> => {
     if (!searchedUser) {
       toast.error("Please search for a user first");
       return;
@@ -89,8 +97,7 @@ const Beneficiaries: React.FC = () => {
       handleCloseModal();
     } catch (error: unknown) {
       const errorMessage =
-        (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Failed to add beneficiary";
+        (error as ErrorResponse)?.response?.data?.message || "Failed to add beneficiary";
       toast.error(errorMessage);
     } finally {
       setAddLoading(false);
@@ -100,7 +107,7 @@ const Beneficiaries: React.FC = () => {
   const handleRemoveBeneficiary = async (
     accountNumber: string,
     name: string
-  ) => {
+  ): Promise<void> => {
     if (
       !window.confirm(
         `Are you sure you want to remove ${name} from your beneficiaries?`
@@ -115,13 +122,12 @@ const Beneficiaries: React.FC = () => {
       await loadBeneficiaries();
     } catch (error: unknown) {
       const errorMessage =
-        (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Failed to remove beneficiary";
+        (error as ErrorResponse)?.response?.data?.message || "Failed to remove beneficiary";
       toast.error(errorMessage);
     }
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (): void => {
     setShowAddModal(false);
     setSearchAccountNumber("");
     setSearchedUser(null);
@@ -130,11 +136,11 @@ const Beneficiaries: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="h-6 md:h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-6 md:mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {Array.from({ length: 6 }, (_, i) => (
               <div
                 key={`loading-skeleton-${i}`}
@@ -148,11 +154,11 @@ const Beneficiaries: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Beneficiaries</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Beneficiaries</h1>
           <p className="text-gray-600">
             Manage your saved beneficiaries ({beneficiaries.length}/10)
           </p>
@@ -161,10 +167,11 @@ const Beneficiaries: React.FC = () => {
         <button
           onClick={() => setShowAddModal(true)}
           disabled={beneficiaries.length >= 10}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add Beneficiary
+          <span className="hidden sm:inline">Add Beneficiary</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
@@ -182,18 +189,18 @@ const Beneficiaries: React.FC = () => {
           </p>
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Your First Beneficiary
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {beneficiaries.map((beneficiary) => (
             <div
               key={beneficiary.accountNumber}
-              className="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl shadow-sm border p-4 md:p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -213,11 +220,11 @@ const Beneficiaries: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-semibold text-gray-900">
+                <h3 className="font-semibold text-gray-900 truncate">
                   {beneficiary.nickname || beneficiary.name}
                 </h3>
                 {beneficiary.nickname && (
-                  <p className="text-sm text-gray-600">{beneficiary.name}</p>
+                  <p className="text-sm text-gray-600 truncate">{beneficiary.name}</p>
                 )}
                 <p className="text-sm text-gray-500 font-mono">
                   {beneficiary.accountNumber}
@@ -231,14 +238,14 @@ const Beneficiaries: React.FC = () => {
       {/* Add Beneficiary Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
+          <div className="bg-white rounded-xl max-w-md w-full p-4 md:p-6 max-h-screen overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                 Add Beneficiary
               </h2>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -272,7 +279,7 @@ const Beneficiaries: React.FC = () => {
                     disabled={
                       searchLoading || searchAccountNumber.length !== 10
                     }
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
                   >
                     {searchLoading ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -287,11 +294,11 @@ const Beneficiaries: React.FC = () => {
               {searchedUser && (
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center">
-                    <div className="p-2 bg-green-100 rounded-full mr-3">
+                    <div className="p-2 bg-green-100 rounded-full mr-3 flex-shrink-0">
                       <Users className="h-5 w-5 text-green-600" />
                     </div>
-                    <div>
-                      <p className="font-medium text-green-900">
+                    <div className="min-w-0">
+                      <p className="font-medium text-green-900 truncate">
                         {searchedUser.fullName}
                       </p>
                       <p className="text-sm text-green-700">
@@ -330,21 +337,21 @@ const Beneficiaries: React.FC = () => {
               <div className="flex space-x-3 pt-4">
                 <button
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddBeneficiary}
                   disabled={addLoading || !searchedUser}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                 >
                   {addLoading ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   ) : (
                     <>
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Beneficiary
+                      Add
                     </>
                   )}
                 </button>
