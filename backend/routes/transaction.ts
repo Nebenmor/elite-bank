@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import { authenticate } from "../middleware/auth";
 import { User } from "../models/User";
@@ -7,12 +7,14 @@ import { Transaction } from "../models/Transaction";
 const router = express.Router();
 
 // Transfer money
-router.post("/transfer", authenticate, async (req: any, res) => {
+router.post("/transfer", authenticate, async (req: Request, res: Response): Promise<void> => {
   const session = await mongoose.startSession();
 
   try {
     await session.withTransaction(async () => {
       const { toAccountNumber, amount, description } = req.body;
+
+      console.log("Transfer request:", { toAccountNumber, amount, userId: req.userId });
 
       // Validation
       if (!toAccountNumber || !amount) {
@@ -33,10 +35,16 @@ router.post("/transfer", authenticate, async (req: any, res) => {
       }
 
       // Get sender
+      if (!req.userId) {
+        throw new Error("User not authenticated");
+      }
+
       const sender = await User.findById(req.userId).session(session);
       if (!sender) {
         throw new Error("Sender not found");
       }
+
+      console.log("Sender found:", { accountNumber: sender.accountNumber, balance: sender.balance });
 
       // Check if sender has sufficient balance
       if (sender.balance < transferAmount) {
@@ -51,18 +59,28 @@ router.post("/transfer", authenticate, async (req: any, res) => {
         throw new Error("Recipient account not found");
       }
 
+      console.log("Recipient found:", { accountNumber: recipient.accountNumber });
+
       // Prevent self-transfer
       if (sender.accountNumber === recipient.accountNumber) {
         throw new Error("Cannot transfer money to yourself");
       }
 
       // Update balances
-      sender.balance -= transferAmount;
-      recipient.balance += transferAmount;
+      const newSenderBalance = sender.balance - transferAmount;
+      const newRecipientBalance = recipient.balance + transferAmount;
+
+      sender.balance = newSenderBalance;
+      recipient.balance = newRecipientBalance;
 
       // Save users
       await sender.save({ session });
       await recipient.save({ session });
+
+      console.log("Balances updated:", {
+        sender: { old: sender.balance + transferAmount, new: sender.balance },
+        recipient: { old: recipient.balance - transferAmount, new: recipient.balance }
+      });
 
       // Create transaction record
       const transaction = new Transaction({
@@ -73,6 +91,8 @@ router.post("/transfer", authenticate, async (req: any, res) => {
       });
 
       await transaction.save({ session });
+
+      console.log("Transaction saved:", transaction._id);
 
       res.json({
         message: "Transfer successful",
@@ -98,12 +118,14 @@ router.post("/transfer", authenticate, async (req: any, res) => {
 });
 
 // Quick transfer to beneficiary
-router.post("/quick-transfer", authenticate, async (req: any, res) => {
+router.post("/quick-transfer", authenticate, async (req: Request, res: Response): Promise<void> => {
   const session = await mongoose.startSession();
 
   try {
     await session.withTransaction(async () => {
       const { beneficiaryAccountNumber, amount, description } = req.body;
+
+      console.log("Quick transfer request:", { beneficiaryAccountNumber, amount, userId: req.userId });
 
       // Validation
       if (!beneficiaryAccountNumber || !amount) {
@@ -120,6 +142,10 @@ router.post("/quick-transfer", authenticate, async (req: any, res) => {
       }
 
       // Get sender
+      if (!req.userId) {
+        throw new Error("User not authenticated");
+      }
+
       const sender = await User.findById(req.userId).session(session);
       if (!sender) {
         throw new Error("Sender not found");
@@ -163,6 +189,8 @@ router.post("/quick-transfer", authenticate, async (req: any, res) => {
       });
 
       await transaction.save({ session });
+
+      console.log("Quick transfer completed:", transaction._id);
 
       res.json({
         message: "Quick transfer successful",

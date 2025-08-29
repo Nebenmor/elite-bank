@@ -63,8 +63,9 @@ router.post("/signup", async (req: Request, res: Response) => {
 
     await user.save();
 
-    // Generate token
-    const token = generateToken(user._id?.toString() || "");
+    // Generate token - Fixed ObjectId stringification
+    const userId = user._id.toString();
+    const token = generateToken(userId);
 
     res.status(201).json({
       message: "User created successfully",
@@ -107,8 +108,9 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Generate token
-    const token = generateToken(user._id?.toString() || "");
+    // Generate token - Fixed ObjectId stringification
+    const userId = user._id.toString();
+    const token = generateToken(userId);
 
     res.json({
       message: "Login successful",
