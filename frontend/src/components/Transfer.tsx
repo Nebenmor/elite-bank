@@ -160,28 +160,28 @@ const Transfer: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
-      <div className="mb-6 md:mb-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pb-20 md:pb-8">
+      <div className="mb-6">
         <h1 className="text-xl md:text-2xl font-bold text-gray-900">Send Money</h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-sm">
           Available Balance: {formatCurrency(user.balance)}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Transfer Form */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
             {/* Quick Transfer Toggle */}
             {beneficiaries.length > 0 && (
-              <div className="flex space-x-2 md:space-x-4 mb-4 md:mb-6">
+              <div className="flex space-x-2 md:space-x-4 mb-6">
                 <button
                   onClick={() => {
                     setShowQuickTransfer(false);
                     setSelectedBeneficiary(null);
                     setSearchedUser(null);
                   }}
-                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg font-medium text-sm ${
                     !showQuickTransfer
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -197,7 +197,7 @@ const Transfer: React.FC = () => {
                     setSearchedUser(null);
                     setSearchAccountNumber("");
                   }}
-                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg font-medium text-sm ${
                     showQuickTransfer
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -232,7 +232,7 @@ const Transfer: React.FC = () => {
                           )
                         }
                         placeholder="Enter 10-digit account number"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         maxLength={10}
                       />
                       <button
@@ -240,7 +240,7 @@ const Transfer: React.FC = () => {
                         disabled={
                           searchLoading || searchAccountNumber.length !== 10
                         }
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                         aria-label="Search user"
                       >
                         {searchLoading ? (
@@ -253,16 +253,16 @@ const Transfer: React.FC = () => {
                   </div>
 
                   {searchedUser && (
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="p-3 md:p-4 bg-green-50 border border-green-200 rounded-lg">
                       <div className="flex items-center">
-                        <div className="p-2 bg-green-100 rounded-full mr-3 flex-shrink-0">
+                        <div className="p-2 bg-green-100 rounded-full mr-3">
                           <Users className="h-5 w-5 text-green-600" />
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-green-900 truncate">
+                        <div>
+                          <p className="font-medium text-green-900 text-sm">
                             {searchedUser.fullName}
                           </p>
-                          <p className="text-sm text-green-700">
+                          <p className="text-xs text-green-700">
                             {searchedUser.accountNumber}
                           </p>
                         </div>
@@ -282,25 +282,25 @@ const Transfer: React.FC = () => {
                     Select Beneficiary
                   </label>
                   {selectedBeneficiary ? (
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="p-3 md:p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center min-w-0 flex-1">
-                          <div className="p-2 bg-blue-100 rounded-full mr-3 flex-shrink-0">
+                        <div className="flex items-center">
+                          <div className="p-2 bg-blue-100 rounded-full mr-3">
                             <Users className="h-5 w-5 text-blue-600" />
                           </div>
-                          <div className="min-w-0">
-                            <p className="font-medium text-blue-900 truncate">
+                          <div>
+                            <p className="font-medium text-blue-900 text-sm">
                               {selectedBeneficiary.nickname ||
                                 selectedBeneficiary.name}
                             </p>
-                            <p className="text-sm text-blue-700">
+                            <p className="text-xs text-blue-700">
                               {selectedBeneficiary.accountNumber}
                             </p>
                           </div>
                         </div>
                         <button
                           onClick={() => setSelectedBeneficiary(null)}
-                          className="text-blue-600 hover:text-blue-800 ml-2 flex-shrink-0 transition-colors"
+                          className="text-blue-600 hover:text-blue-800 p-2"
                           aria-label="Deselect beneficiary"
                         >
                           <ArrowLeft className="h-5 w-5" />
@@ -309,24 +309,24 @@ const Transfer: React.FC = () => {
                     </div>
                   ) : (
                     <div
-                      className="space-y-2 max-h-60 overflow-y-auto"
+                      className="space-y-2 max-h-32 md:max-h-40 overflow-y-auto"
                       id="beneficiary-selection"
                     >
                       {beneficiaries.map((beneficiary) => (
                         <button
                           key={beneficiary.accountNumber}
                           onClick={() => selectBeneficiary(beneficiary)}
-                          className="w-full p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                          className="w-full p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <div className="flex items-center">
-                            <div className="p-2 bg-gray-100 rounded-full mr-3 flex-shrink-0">
+                            <div className="p-2 bg-gray-100 rounded-full mr-3">
                               <Users className="h-4 w-4 text-gray-600" />
                             </div>
-                            <div className="min-w-0">
-                              <p className="font-medium text-gray-900 truncate">
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">
                                 {beneficiary.nickname || beneficiary.name}
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-xs text-gray-600">
                                 {beneficiary.accountNumber}
                               </p>
                             </div>
@@ -362,7 +362,7 @@ const Transfer: React.FC = () => {
                       step="0.01"
                       min="0.01"
                       max={user.balance}
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                   </div>
                 </div>
@@ -381,7 +381,7 @@ const Transfer: React.FC = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="What's this for?"
                     maxLength={100}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   />
                 </div>
 
@@ -390,7 +390,7 @@ const Transfer: React.FC = () => {
                     selectedBeneficiary ? handleQuickTransfer : handleTransfer
                   }
                   disabled={loading || !amount}
-                  className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+                  className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
                 >
                   {loading ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -407,26 +407,26 @@ const Transfer: React.FC = () => {
         </div>
 
         {/* Beneficiaries Sidebar */}
-        <div className="lg:block">
+        <div className="order-first lg:order-last">
           <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
             <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
               Saved Beneficiaries
             </h3>
 
             {beneficiaries.length === 0 ? (
-              <div className="text-center py-6">
-                <Users className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500 text-sm">No saved beneficiaries</p>
+              <div className="text-center py-4 md:py-6">
+                <Users className="h-6 md:h-8 w-6 md:w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-500 text-xs md:text-sm">No saved beneficiaries</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 {beneficiaries.slice(0, 5).map((beneficiary) => (
                   <button
                     key={beneficiary.accountNumber}
-                    className="w-full text-left p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                    className="w-full text-left p-2 md:p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onClick={() => selectBeneficiary(beneficiary)}
                   >
-                    <p className="font-medium text-gray-900 text-sm truncate">
+                    <p className="font-medium text-gray-900 text-xs md:text-sm">
                       {beneficiary.nickname || beneficiary.name}
                     </p>
                     <p className="text-xs text-gray-500">
