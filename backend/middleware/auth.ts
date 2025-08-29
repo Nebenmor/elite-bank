@@ -20,7 +20,7 @@ export const authenticate = async (
   try {
     // Get token from Authorization header
     const authHeader = req.header("Authorization");
-    
+
     if (!authHeader) {
       res.status(401).json({ message: "No authorization header provided" });
       return;
@@ -35,7 +35,7 @@ export const authenticate = async (
 
     // Verify token
     const decoded = verifyToken(token);
-    
+
     if (!decoded?.userId) {
       res.status(401).json({ message: "Invalid token format" });
       return;
@@ -52,22 +52,22 @@ export const authenticate = async (
     // Set user data in request
     req.userId = user._id.toString();
     req.user = user;
-    
+
     next();
   } catch (error: any) {
     console.error("Authentication error:", error);
-    
+
     // Handle specific JWT errors
-    if (error.name === 'JsonWebTokenError') {
+    if (error.name === "JsonWebTokenError") {
       res.status(401).json({ message: "Invalid token" });
       return;
     }
-    
-    if (error.name === 'TokenExpiredError') {
+
+    if (error.name === "TokenExpiredError") {
       res.status(401).json({ message: "Token expired" });
       return;
     }
-    
+
     res.status(401).json({ message: "Authentication failed" });
   }
 };
