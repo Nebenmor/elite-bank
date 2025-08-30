@@ -63,15 +63,15 @@ router.post("/signup", async (req: Request, res: Response) => {
 
     await user.save();
 
-    // Generate token - Fixed ObjectId stringification
-    const userId = user._id.toString();
-    const token = generateToken(userId);
+   // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    const userIdString = user._id.toString();
+    const token = generateToken(userIdString);
 
     res.status(201).json({
       message: "User created successfully",
       token,
       user: {
-        id: user._id,
+        id: userIdString,
         email: user.email,
         fullName: user.fullName,
         accountNumber: user.accountNumber,
@@ -108,15 +108,15 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Generate token - Fixed ObjectId stringification
-    const userId = user._id.toString();
-    const token = generateToken(userId);
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    const userIdString = user._id.toString();
+    const token = generateToken(userIdString);
 
     res.json({
       message: "Login successful",
       token,
       user: {
-        id: user._id,
+        id: userIdString,
         email: user.email,
         fullName: user.fullName,
         accountNumber: user.accountNumber,

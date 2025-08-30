@@ -49,8 +49,9 @@ export const authenticate = async (
       return;
     }
 
-    // Set user data in request
-    req.userId = user._id.toString();
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    const userIdString = user._id.toString();
+    req.userId = userIdString;
     req.user = user;
 
     next();
