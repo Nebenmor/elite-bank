@@ -53,12 +53,12 @@ const Dashboard: React.FC = () => {
   };
 
   const renderLoadingSkeletons = () => (
-    <div className="space-y-3">
-      {Array.from({ length: 3 }, (_, i) => (
+    <div className="space-y-2">
+      {Array.from({ length: 2 }, (_, i) => (
         <div key={`transaction-loading-${i}`} className="animate-pulse">
           <div className="flex items-center space-x-3">
-            <div className="rounded-full bg-gray-200 h-10 w-10"></div>
-            <div className="flex-1 space-y-2">
+            <div className="rounded-full bg-gray-200 h-8 w-8"></div>
+            <div className="flex-1 space-y-1">
               <div className="h-3 bg-gray-200 rounded w-3/4"></div>
               <div className="h-2 bg-gray-200 rounded w-1/2"></div>
             </div>
@@ -70,43 +70,43 @@ const Dashboard: React.FC = () => {
   );
 
   const renderEmptyTransactions = () => (
-    <div className="text-center py-8">
-      <div className="mx-auto h-10 w-10 text-gray-400 mb-3">
-        <CreditCard className="h-10 w-10" />
+    <div className="text-center py-4">
+      <div className="mx-auto h-8 w-8 text-gray-400 mb-2">
+        <CreditCard className="h-8 w-8" />
       </div>
       <h3 className="text-gray-900 font-medium mb-1 text-sm">No transactions yet</h3>
-      <p className="text-gray-500 mb-4 text-xs">Start by sending money to someone</p>
+      <p className="text-gray-500 mb-3 text-xs">Start by sending money to someone</p>
       <Link
         to="/transfer"
-        className="inline-flex items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
       >
-        <Send className="h-3 w-3 mr-2" />
+        <Send className="h-3 w-3 mr-1" />
         Send Money
       </Link>
     </div>
   );
 
   const renderTransactionsList = () => (
-    <div className="space-y-3">
-      {transactions.map((transaction) => {
+    <div className="space-y-2">
+      {transactions.slice(0, 2).map((transaction) => {
         const isOutgoing = transaction.from === user.accountNumber;
         return (
           <div
             key={transaction._id}
-            className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg"
+            className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
           >
             <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div
-                className={`p-2 rounded-full flex-shrink-0 ${
+                className={`p-1.5 rounded-full flex-shrink-0 ${
                   isOutgoing
                     ? "bg-red-100 text-red-600"
                     : "bg-green-100 text-green-600"
                 }`}
               >
                 {isOutgoing ? (
-                  <ArrowUpRight className="h-4 w-4" />
+                  <ArrowUpRight className="h-3 w-3" />
                 ) : (
-                  <ArrowDownLeft className="h-4 w-4" />
+                  <ArrowDownLeft className="h-3 w-3" />
                 )}
               </div>
               <div className="min-w-0 flex-1">
@@ -142,81 +142,83 @@ const Dashboard: React.FC = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pb-20 md:pb-8">
-      {/* Welcome Section */}
-      <div className="mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+    <div className="h-full flex flex-col max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+      {/* Welcome Section - Compact */}
+      <div className="mb-4 flex-shrink-0">
+        <h1 className="text-lg md:text-xl font-bold text-gray-900">
           Welcome back, {user.fullName}
         </h1>
-        <p className="text-gray-600 text-sm">Here's your account overview</p>
+        <p className="text-gray-600 text-xs md:text-sm">Here's your account overview</p>
       </div>
 
-      {/* Account Info Card */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 md:p-6 text-white mb-6">
-        <div className="flex items-center justify-between mb-4">
+      {/* Account Info Card - Compact */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 md:p-5 text-white mb-4 flex-shrink-0">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
-            <CreditCard className="h-6 md:h-8 w-6 md:w-8 mr-3" />
+            <CreditCard className="h-5 md:h-6 w-5 md:w-6 mr-2" />
             <div>
-              <h3 className="text-base md:text-lg font-semibold">Current Account</h3>
-              <p className="text-blue-100 text-xs md:text-sm">{user.accountNumber}</p>
+              <h3 className="text-sm md:text-base font-semibold">Current Account</h3>
+              <p className="text-blue-100 text-xs">{user.accountNumber}</p>
             </div>
           </div>
           <button
             onClick={() => setShowBalance(!showBalance)}
-            className="text-white hover:text-blue-100 p-2"
+            className="text-white hover:text-blue-100 p-1"
             aria-label={showBalance ? "Hide balance" : "Show balance"}
           >
             {showBalance ? (
-              <EyeOff className="h-4 md:h-5 w-4 md:w-5" />
+              <EyeOff className="h-4 w-4" />
             ) : (
-              <Eye className="h-4 md:h-5 w-4 md:w-5" />
+              <Eye className="h-4 w-4" />
             )}
           </button>
         </div>
 
-        <div className="mb-4 md:mb-6">
-          <p className="text-blue-100 text-xs md:text-sm mb-1">Available Balance</p>
-          <p className="text-2xl md:text-3xl font-bold">
+        <div className="mb-3 md:mb-4">
+          <p className="text-blue-100 text-xs mb-1">Available Balance</p>
+          <p className="text-xl md:text-2xl font-bold">
             {showBalance ? formatCurrency(user.balance) : "****"}
           </p>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
+        {/* Quick Actions - Compact */}
+        <div className="grid grid-cols-2 gap-2 md:gap-3">
           <Link
             to="/transfer"
-            className="bg-white/25 hover:bg-white/30 rounded-lg p-3 md:p-4 text-center transition-all flex flex-col items-center"
+            className="bg-white/25 hover:bg-white/30 rounded-lg p-2 md:p-3 text-center transition-all flex flex-col items-center"
           >
-            <Send className="h-5 md:h-6 w-5 md:w-6 mb-2" />
-            <p className="text-xs md:text-sm font-medium text-white">Send Money</p>
+            <Send className="h-4 md:h-5 w-4 md:w-5 mb-1" />
+            <p className="text-xs font-medium text-white">Send Money</p>
           </Link>
           <Link
             to="/beneficiaries"
-            className="bg-white/25 hover:bg-white/30 rounded-lg p-3 md:p-4 text-center transition-all flex flex-col items-center"
+            className="bg-white/25 hover:bg-white/30 rounded-lg p-2 md:p-3 text-center transition-all flex flex-col items-center"
           >
-            <Users className="h-5 md:h-6 w-5 md:w-6 mb-2" />
-            <p className="text-xs md:text-sm font-medium text-white">Beneficiaries</p>
+            <Users className="h-4 md:h-5 w-4 md:w-5 mb-1" />
+            <p className="text-xs font-medium text-white">Beneficiaries</p>
           </Link>
         </div>
       </div>
 
-      {/* Recent Transactions */}
-      <div className="bg-white rounded-xl shadow-sm border p-4 md:p-6">
-        <div className="flex items-center justify-between mb-4 md:mb-6">
-          <h2 className="text-base md:text-lg font-semibold text-gray-900">
+      {/* Recent Transactions - Flexible height */}
+      <div className="bg-white rounded-xl shadow-sm border flex-1 flex flex-col min-h-0">
+        <div className="flex items-center justify-between p-3 md:p-4 border-b flex-shrink-0">
+          <h2 className="text-sm md:text-base font-semibold text-gray-900">
             Recent Transactions
           </h2>
           <Link
             to="/transfer"
-            className="text-blue-600 hover:text-blue-700 text-xs md:text-sm font-medium"
+            className="text-blue-600 hover:text-blue-700 text-xs font-medium"
           >
             View All
           </Link>
         </div>
-
-        {loading && renderLoadingSkeletons()}
-        {!loading && transactions.length === 0 && renderEmptyTransactions()}
-        {!loading && transactions.length > 0 && renderTransactionsList()}
+        
+        <div className="flex-1 p-3 md:p-4 overflow-y-auto min-h-0">
+          {loading && renderLoadingSkeletons()}
+          {!loading && transactions.length === 0 && renderEmptyTransactions()}
+          {!loading && transactions.length > 0 && renderTransactionsList()}
+        </div>
       </div>
     </div>
   );

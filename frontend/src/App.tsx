@@ -79,7 +79,7 @@ const Navigation: React.FC = () => {
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     location.pathname === item.path
                       ? "text-blue-600 bg-blue-50"
-                      : "text-gray-500 hover:text-gray-700"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
                   }`}
                 >
                   {item.label}
@@ -88,12 +88,12 @@ const Navigation: React.FC = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center space-x-4">
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-gray-700 font-medium">
               Welcome, {user.fullName}
             </span>
             <button
               onClick={logout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             >
               Logout
             </button>
@@ -101,6 +101,25 @@ const Navigation: React.FC = () => {
         </div>
       </div>
     </nav>
+  );
+};
+
+// Main content wrapper to handle fixed header spacing
+const ContentWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { user } = useAuth();
+
+  return (
+    <div
+      className={`
+      ${user ? "pt-16" : ""} 
+      ${user ? "pb-16 md:pb-0" : ""} 
+      ${user ? "h-screen overflow-hidden" : "min-h-screen"}
+    `}
+    >
+      {children}
+    </div>
   );
 };
 
@@ -112,49 +131,65 @@ const AppRoutes: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       {user && <HamburgerMenu />}
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <PublicRoute>
-              <Signup />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/transfer"
-          element={
-            <ProtectedRoute>
-              <Transfer />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/beneficiaries"
-          element={
-            <ProtectedRoute>
-              <Beneficiaries />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <ContentWrapper>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <div className="min-h-screen flex items-center justify-center p-4">
+                  <Login />
+                </div>
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <div className="min-h-screen flex items-center justify-center p-4">
+                  <Signup />
+                </div>
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <div className="h-full overflow-y-auto">
+                  <Dashboard />
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transfer"
+            element={
+              <ProtectedRoute>
+                <div className="h-full overflow-y-auto">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <Transfer />
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/beneficiaries"
+            element={
+              <ProtectedRoute>
+                <div className="h-full overflow-y-auto">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <Beneficiaries />
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </ContentWrapper>
       {user && <MobileBottomTabs />}
     </div>
   );
@@ -173,6 +208,18 @@ const App: React.FC = () => {
             style: {
               background: "#363636",
               color: "#fff",
+            },
+            success: {
+              style: {
+                background: "#10B981",
+                color: "#fff",
+              },
+            },
+            error: {
+              style: {
+                background: "#EF4444",
+                color: "#fff",
+              },
             },
           }}
         />
