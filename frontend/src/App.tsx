@@ -1,35 +1,231 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useLocation,
+} from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Dashboard from "./components/Dashboard";
+import Transfer from "./components/Transfer";
+import Beneficiaries from "./components/Beneficiaries";
+import MobileBottomTabs from "./components/MobileBottomTabs";
+import HamburgerMenu from "./components/HamburgerMenu";
 
-function App() {
-  const [count, setCount] = useState(0)
+// Loading spinner component
+const LoadingSpinner: React.FC = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+);
+
+// Protected route component
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  return user ? <>{children}</> : <Navigate to="/login" />;
+};
+
+// Public route component (redirect to dashboard if authenticated)
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  return user ? <Navigate to="/dashboard" /> : <>{children}</>;
+};
+
+// Navigation component
+const Navigation: React.FC = () => {
+  const { user, logout } = useAuth();
+  const location = useLocation();
+
+  if (!user) return null;
+
+  const navItems = [
+    { path: "/dashboard", label: "Dashboard" },
+    { path: "/transfer", label: "Transfer" },
+    { path: "/beneficiaries", label: "Beneficiaries" },
+  ];
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <h1 className="text-xl font-bold text-gray-900 pl-14 md:pl-0">
+                Elite Bank
+              </h1>
+            </div>
+            <div className="hidden md:ml-6 md:flex md:space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    location.pathname === item.path
+                      ? "text-blue-600 bg-blue-50"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="hidden md:flex items-center space-x-4">
+            <span className="text-sm text-gray-700 font-medium">
+              Welcome, {user.fullName}
+            </span>
+            <button
+              onClick={logout}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </nav>
+  );
+};
 
-export default App
+// Main content wrapper to handle fixed header spacing
+const ContentWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { user } = useAuth();
+
+  return (
+    <div
+      className={`
+      ${user ? "pt-16" : ""} 
+      ${user ? "pb-16 md:pb-0" : ""} 
+      ${user ? "h-screen overflow-hidden" : "min-h-screen"}
+    `}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Main App Routes
+const AppRoutes: React.FC = () => {
+  const { user } = useAuth();
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      {user && <HamburgerMenu />}
+      <ContentWrapper>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <div className="min-h-screen flex items-center justify-center p-4">
+                  <Login />
+                </div>
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <div className="min-h-screen flex items-center justify-center p-4">
+                  <Signup />
+                </div>
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <div className="h-full overflow-y-auto">
+                  <Dashboard />
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transfer"
+            element={
+              <ProtectedRoute>
+                <div className="h-full overflow-y-auto">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <Transfer />
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/beneficiaries"
+            element={
+              <ProtectedRoute>
+                <div className="h-full overflow-y-auto">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <Beneficiaries />
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </ContentWrapper>
+      {user && <MobileBottomTabs />}
+    </div>
+  );
+};
+
+// Main App component
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
+            success: {
+              style: {
+                background: "#10B981",
+                color: "#fff",
+              },
+            },
+            error: {
+              style: {
+                background: "#EF4444",
+                color: "#fff",
+              },
+            },
+          }}
+        />
+      </Router>
+    </AuthProvider>
+  );
+};
+
+export default App;
