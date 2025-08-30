@@ -25,22 +25,50 @@ const corsOptions = {
 };
 
 // Request logging middleware (Phase 2: Debug route connectivity)
+// Replace your current logging middleware with this enhanced version
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path}`);
+
+  // Skip logging for health checks and root requests (likely from Render)
+  if (req.originalUrl === "/" || req.originalUrl === "/health") {
+    console.log(
+      `[${timestamp}] ${req.method} ${req.originalUrl} - HEALTH CHECK/ROOT (skipping detailed logs)`
+    );
+    next();
+    return;
+  }
+
+  console.log(`\n=== API REQUEST START ===`);
+  console.log(`[${timestamp}] ${req.method} ${req.originalUrl}`);
+  console.log(
+    `Full URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`
+  );
+  console.log(`User-Agent: ${req.headers["user-agent"] || "N/A"}`);
+  console.log(`Referer: ${req.headers.referer || "N/A"}`);
+
   console.log(`Headers:`, {
     "content-type":
       req.headers["content-type"] || "N/A (normal for GET requests)",
     authorization: req.headers.authorization ? "Bearer [PRESENT]" : "[MISSING]",
     origin: req.headers.origin || "N/A",
+    host: req.headers.host || "N/A",
+    "x-requested-with": req.headers["x-requested-with"] || "N/A",
   });
 
+  // Only log environment info for API requests
+  if (req.originalUrl.startsWith("/api/")) {
+    console.log(`Environment Check:`);
+    console.log(`- NODE_ENV: ${process.env.NODE_ENV}`);
+    console.log(`- FRONTEND_URL: ${process.env.FRONTEND_URL}`);
+    console.log(`- Allowed Origins: ${JSON.stringify(allowedOrigins)}`);
+  }
+
   if (req.body && Object.keys(req.body).length > 0) {
-    // Log body but mask password
     const logBody = { ...req.body };
     if (logBody.password) logBody.password = "[MASKED]";
     console.log(`Body:`, logBody);
   }
+  console.log(`=== API REQUEST END ===\n`);
 
   next();
 });
