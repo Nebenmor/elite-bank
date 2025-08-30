@@ -82,6 +82,8 @@ banking-app/
     │   │   ├── Signup.tsx
     │   │   ├── Dashboard.tsx
     │   │   ├── Transfer.tsx
+    │   │   ├── HamburgerMenu.tsx
+    │   │   ├── MobileBottomTabs.tsx
     │   │   └── Beneficiaries.tsx
     │   ├── context/
     │   │   └── AuthContext.tsx
