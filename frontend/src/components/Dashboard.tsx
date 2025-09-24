@@ -179,7 +179,7 @@ const Dashboard: React.FC = () => {
   );
 
   return (
-    <div className="fixed inset-0 pt-16 bg-gradient-to-br from-gray-50 to-blue-50/30 overflow-hidden lg:relative lg:min-h-screen lg:overflow-auto lg:inset-auto">
+    <div className="inset-0 pt-16 bg-gradient-to-br from-gray-50 to-blue-50/30 overflow-hidden lg:relative lg:min-h-screen lg:overflow-auto lg:inset-auto">
       <div className="h-full flex flex-col max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:h-auto">
         {/* Welcome Section - Fixed */}
         <div className="flex-shrink-0 mb-4">
