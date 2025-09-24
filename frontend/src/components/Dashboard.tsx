@@ -13,7 +13,7 @@ import {
   Copy,
   Check,
   TrendingUp,
-  CreditCard
+  CreditCard,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -41,12 +41,12 @@ const Dashboard: React.FC = () => {
 
   const copyAccountNumber = async () => {
     if (!user?.accountNumber) return;
-    
+
     try {
       await navigator.clipboard.writeText(user.accountNumber);
       setCopied(true);
       toast.success("Account number copied to clipboard!");
-      
+
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback method that's more modern
@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
         document.body.appendChild(textArea);
         textArea.select();
         document.body.removeChild(textArea);
-        
+
         setCopied(true);
         toast.success("Account number copied to clipboard!");
         setTimeout(() => setCopied(false), 2000);
@@ -109,7 +109,9 @@ const Dashboard: React.FC = () => {
       <div className="mx-auto h-12 w-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-4">
         <TrendingUp className="h-6 w-6 text-blue-600" />
       </div>
-      <h3 className="text-base font-semibold text-gray-900 mb-2">No transactions yet</h3>
+      <h3 className="text-base font-semibold text-gray-900 mb-2">
+        No transactions yet
+      </h3>
       <p className="text-gray-600 text-sm mb-4 max-w-xs mx-auto">
         Start your financial journey by sending money
       </p>
@@ -191,9 +193,11 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               <h1 className="text-lg md:text-xl font-bold text-gray-900">
-                Welcome back, {user.fullName.split(' ')[0]}
+                Welcome back, {user.fullName.split(" ")[0]}
               </h1>
-              <p className="text-gray-600 text-xs md:text-sm">Here's your account overview</p>
+              <p className="text-gray-600 text-xs md:text-sm">
+                Here's your account overview
+              </p>
             </div>
           </div>
         </div>
@@ -201,14 +205,13 @@ const Dashboard: React.FC = () => {
         {/* Main Content Grid */}
         <div className="flex-1 min-h-0 lg:overflow-auto lg:flex-initial">
           <div className="h-full flex flex-col gap-6 lg:grid lg:grid-cols-3 lg:h-auto">
-            
             {/* Main Account Card */}
             <div className="lg:col-span-2 flex-shrink-0">
-              <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-xl p-4 md:p-6 text-white shadow-xl relative overflow-hidden h-80"> 
+              <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-xl p-4 md:p-6 text-white shadow-xl relative overflow-hidden h-80">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
-                
+
                 <div className="relative h-full flex flex-col">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
@@ -237,7 +240,9 @@ const Dashboard: React.FC = () => {
                   <div className="mb-4">
                     <p className="text-blue-100 text-xs mb-2">Account Number</p>
                     <div className="flex items-center justify-between bg-white/10 rounded-lg p-2 md:p-3 backdrop-blur-sm">
-                      <p className="font-mono text-white font-medium text-sm">{user.accountNumber}</p>
+                      <p className="font-mono text-white font-medium text-sm">
+                        {user.accountNumber}
+                      </p>
                       <button
                         onClick={copyAccountNumber}
                         className="p-1 hover:bg-white/20 rounded-lg transition-colors group"
@@ -254,7 +259,9 @@ const Dashboard: React.FC = () => {
 
                   {/* Balance */}
                   <div className="mb-4">
-                    <p className="text-blue-100 text-xs mb-1">Available Balance</p>
+                    <p className="text-blue-100 text-xs mb-1">
+                      Available Balance
+                    </p>
                     <p className="text-xl md:text-2xl font-bold">
                       {showBalance ? formatCurrency(user.balance) : "••••••••"}
                     </p>
@@ -285,7 +292,9 @@ const Dashboard: React.FC = () => {
             <div className="lg:col-span-1 flex-1 min-h-0 lg:flex-initial">
               <div className="bg-white rounded-xl shadow-xl border border-gray-100 h-full max-h-full flex flex-col lg:h-auto">
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 flex-shrink-0">
-                  <h2 className="text-base font-bold text-gray-900">Recent Activity</h2>
+                  <h2 className="text-base font-bold text-gray-900">
+                    Recent Activity
+                  </h2>
                   {/* <Link
                     to="/transactions" 
                     className="text-blue-600 hover:text-blue-700 text-xs font-semibold hover:underline"
@@ -293,13 +302,17 @@ const Dashboard: React.FC = () => {
                     View All
                   </Link> */}
                 </div>
-                
+
                 {/* Scrollable content area */}
                 <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-visible lg:flex-initial">
                   <div className="p-4">
                     {loading && renderLoadingSkeletons()}
-                    {!loading && transactions.length === 0 && renderEmptyTransactions()}
-                    {!loading && transactions.length > 0 && renderTransactionsList()}
+                    {!loading &&
+                      transactions.length === 0 &&
+                      renderEmptyTransactions()}
+                    {!loading &&
+                      transactions.length > 0 &&
+                      renderTransactionsList()}
                   </div>
                 </div>
               </div>
