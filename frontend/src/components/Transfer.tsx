@@ -283,9 +283,9 @@ const Transfer: React.FC = () => {
                   <>
                     {/* Quick Transfer - Beneficiary Selection */}
                     <div className="mb-8">
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      <div className="block text-sm font-semibold text-gray-700 mb-3">
                         Select Beneficiary
-                      </label>
+                      </div>
                       {selectedBeneficiary ? (
                         <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
                           <div className="flex items-center justify-between">
@@ -346,7 +346,7 @@ const Transfer: React.FC = () => {
                   <div className="space-y-6">
                     {/* Amount Input */}
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      <label htmlFor="transfer-amount" className="block text-sm font-semibold text-gray-700 mb-3">
                         Amount
                       </label>
                       <div className="relative">
@@ -354,6 +354,7 @@ const Transfer: React.FC = () => {
                           ₦
                         </span>
                         <input
+                          id="transfer-amount"
                           type="number"
                           value={amount}
                           onChange={(e) => setAmount(e.target.value)}
@@ -371,10 +372,11 @@ const Transfer: React.FC = () => {
 
                     {/* Description Input */}
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      <label htmlFor="transfer-description" className="block text-sm font-semibold text-gray-700 mb-3">
                         Description (Optional)
                       </label>
                       <input
+                        id="transfer-description"
                         type="text"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
